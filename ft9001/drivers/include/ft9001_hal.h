@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) 2025, FocalTech Systems CO.,Ltd
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#ifndef FT9001_HAL_H_
+#define FT9001_HAL_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdint.h>
+
+#include "ft9001_hal_cpm.h"
+
+uint8_t *HAL_GetVersion(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* FT9001_HAL_H_ */
