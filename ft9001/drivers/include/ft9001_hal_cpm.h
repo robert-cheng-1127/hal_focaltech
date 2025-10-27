@@ -23,11 +23,11 @@
 #ifndef FT9001_HAL_CPM_H_
 #define FT9001_HAL_CPM_H_
 
+#include "ft9001_hal_def.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "ft9001_hal_def.h"
 
 /**
  * @addtogroup FT9001_HAL_Driver

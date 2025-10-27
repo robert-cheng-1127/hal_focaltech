@@ -13,5 +13,7 @@ zephyr_include_directories(
 zephyr_library_sources(
 	${HAL_FT9001_ROOT}/soc/system_ft9001.c
 	${HAL_FT9001_ROOT}/drivers/src/ft9001_hal.c
-	${HAL_FT9001_ROOT}/drivers/src/ft9001_hal_cpm.c
 )
+
+zephyr_library_sources(${HAL_FT9001_ROOT}/drivers/src/ft9001_hal_cpm.c)
+zephyr_library_sources(${HAL_FT9001_ROOT}/drivers/src/ft9001_hal_wdt.c)

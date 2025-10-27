@@ -7,13 +7,12 @@
 #ifndef FT9001_HAL_H_
 #define FT9001_HAL_H_
 
+#include <stdint.h>
+#include "ft9001_hal_cpm.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdint.h>
-
-#include "ft9001_hal_cpm.h"
 
 uint8_t *HAL_GetVersion(void);
 

@@ -44,7 +44,7 @@ typedef struct
 	__IO uint32_t SCDIVR;       /*!< 0x08 System clock divider register */
 	__IO uint32_t PCDIVR1;      /*!< 0x0C Peripheral clock divider register 1 */
 	__IO uint32_t PCDIVR2;      /*!< 0x10 Peripheral clock divider register 2 */
-	__IO uint32_t RESERVED0;     /*!< 0x14 Reserved */
+	__IO uint32_t RESERVED0;    /*!< 0x14 Reserved */
 	__IO uint32_t CDIVUPDR;     /*!< 0x18 Clock divider update register */
 	__IO uint32_t CDIVENR;      /*!< 0x1C Clock divider enable register */
 	__IO uint32_t OCSR;         /*!< 0x20 Oscillator control and status register */
@@ -96,14 +96,28 @@ typedef struct
 	__IO uint32_t PLLNFCSTIMER; /*!< 0xE4 NFC PLL stable time register */
 } CPM_TypeDef;
 
+/* -------------------------------------------------------------------------- */
+/* WDT register map                                                           */
+/* -------------------------------------------------------------------------- */
+
+typedef struct
+{
+	__IO uint16_t WCR;    /*!< 0x00 Control */
+	__IO uint16_t WMR;    /*!< 0x02 Reload/Match */
+	__I  uint16_t WCNTR;  /*!< 0x04 Counter (RO) */
+	__IO uint16_t WSR;    /*!< 0x06 Service */
+} WDT_TypeDef;
+
 /* Base addresses for memory regions */
 #define PERIPH_BASE      0x40000000UL    /*!< Peripheral base address*/
 
 /* Peripheral base addresses */
 #define CPM_BASE         (PERIPH_BASE + 0x00004000UL) /*!< Clock and Power Management base address */
+#define WDT_BASE         (PERIPH_BASE + 0x00005000UL)
 
 /* peripheral declaration */
 #define CPM              ((CPM_TypeDef *)(CPM_BASE))
+#define WDT              ((WDT_TypeDef *)(WDT_BASE))
 
 /* -------------------------------------------------------------------------- */
 /* Bit definitions                                                            */
@@ -115,7 +129,7 @@ typedef struct
 /*                                                                            */
 /******************************************************************************/
 
-/*******************  Bits definition for CPM_SLPCFGR register  *****************/
+/*******************  Bits definition for CPM_SLPCFGR register  ***************/
 
 /* [31:30] SLEEP_MODE[1:0] */
 #define CPM_SLPCFGR_SLEEP_MODE_Pos           (30U)
@@ -442,7 +456,7 @@ typedef struct
 #define CPM_CSWCFGR_SYS_SEL_OSC8M            (0x0UL << CPM_CSWCFGR_SYS_SEL_Pos)     /*!< 0x00000000 */
 #define CPM_CSWCFGR_SYS_SEL_OSC400M          (0x1UL << CPM_CSWCFGR_SYS_SEL_Pos)     /*!< 0x00000001 */
 
-/*******************  Bits definition for CPM_VCCCTMR register  ***************/
+/*******************  Bits definition for CPM_VCCCTMR register  *****************/
 /* [31:30] CORE_TEST_KEY[1:0] */
 #define CPM_VCCCTMR_CORE_TEST_KEY_Pos        (30U)
 #define CPM_VCCCTMR_CORE_TEST_KEY_Msk        (0x3UL << CPM_VCCCTMR_CORE_TEST_KEY_Pos)
@@ -563,8 +577,59 @@ typedef struct
 #define CPM_O400MTRIMR_OSC400M_TRIM_Msk      (0x1FFFFUL << CPM_O400MTRIMR_OSC400M_TRIM_Pos)
 #define CPM_O400MTRIMR_OSC400M_TRIM          CPM_O400MTRIMR_OSC400M_TRIM_Msk
 
+
+/******************************************************************************/
+/*                                                                            */
+/*                        Watchdog Module                                     */
+/*                                                                            */
+/******************************************************************************/
+
+/*******************  Bits definition for WDT_WCR register  *******************/
+/* [3] WAIT */
+#define WDT_WCR_WAIT_Pos        (3U)
+#define WDT_WCR_WAIT_Msk        (0x1U << WDT_WCR_WAIT_Pos)
+#define WDT_WCR_WAIT            WDT_WCR_WAIT_Msk
+
+/* [2] DOZE */
+#define WDT_WCR_DOZE_Pos        (2U)
+#define WDT_WCR_DOZE_Msk        (0x1U << WDT_WCR_DOZE_Pos)
+#define WDT_WCR_DOZE            WDT_WCR_DOZE_Msk
+
+/* [1] DBG */
+#define WDT_WCR_DBG_Pos         (1U)
+#define WDT_WCR_DBG_Msk         (0x1U << WDT_WCR_DBG_Pos)
+#define WDT_WCR_DBG             WDT_WCR_DBG_Msk
+
+/* [0] EN */
+#define WDT_WCR_EN_Pos          (0U)
+#define WDT_WCR_EN_Msk          (0x1U << WDT_WCR_EN_Pos)
+#define WDT_WCR_EN              WDT_WCR_EN_Msk
+
+/* Convenience mask for mode bits (DBG/DOZE/WAIT) */
+#define WDT_WCR_MODE_Msk        (WDT_WCR_DBG_Msk | WDT_WCR_DOZE_Msk | WDT_WCR_WAIT_Msk)
+
+/*******************  Bits definition for WDT_WMR register  *******************/
+/* [15:0] WM */
+#define WDT_WMR_WM_Pos          (0U)
+#define WDT_WMR_WM_Msk          (0xFFFFUL << WDT_WMR_WM_Pos)
+#define WDT_WMR_WM              WDT_WMR_WM_Msk
+
+/*******************  Bits definition for WDT_WCNTR register ******************/
+/* [15:0] WC */
+#define WDT_WCNTR_WC_Pos        (0U)
+#define WDT_WCNTR_WC_Msk        (0xFFFFUL << WDT_WCNTR_WC_Pos)
+#define WDT_WCNTR_WC            WDT_WCNTR_WC_Msk
+
+/*******************  Bits definition for WDT_WSR register  *******************/
+/* [15:0] WS */
+#define WDT_WSR_WS_Pos          (0U)
+#define WDT_WSR_WS_Msk          (0xFFFFUL << WDT_WSR_WS_Pos)
+#define WDT_WSR_WS              WDT_WSR_WS_Msk
+
+
 #ifdef __cplusplus
 }
+
 #endif
 
 #endif /* __FT9001_H */

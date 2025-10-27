@@ -7,11 +7,11 @@
 #ifndef SYSTEM_FT9001_H_
 #define SYSTEM_FT9001_H_
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdint.h>
 
 extern uint32_t SystemCoreClock;
 
