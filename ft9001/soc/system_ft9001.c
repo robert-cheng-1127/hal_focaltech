@@ -16,6 +16,8 @@ uint32_t SystemCoreClock = 160000000U;
 
 void SystemInit(void)
 {
+	ft9001_wdt_disable(WDT);
+
 	(void)ft9001_cpm_hsosc_trim_set(FT9001_CPM_OSC_FREQ_320MHZ);
 	(void)ft9001_cpm_sysclk_source_set(FT9001_CPM_SYSCLK_OSC400M, SYSCLK_SWITCH_POLLS);
 	(void)ft9001_cpm_ips_div_set(1U);
