@@ -9,6 +9,8 @@
 
 #include <stdint.h>
 #include "ft9001_hal_cpm.h"
+#include "ft9001_hal_wdt.h"
+#include "ft9001_hal_tc.h"
 
 #ifdef __cplusplus
 extern "C" {

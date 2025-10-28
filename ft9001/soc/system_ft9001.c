@@ -11,12 +11,11 @@ uint32_t SystemCoreClock = 160000000U;
 
 void SystemInit(void)
 {
-<<<<<<< HEAD
-	HAL_WDT_Disable();
-=======
 	/* Disable Watchdog */
 	HAL_WDT_Disable(WDT);
->>>>>>> 968f4d7 (fixup! hal: wdt: add watchdog register map and disable WDT on boot)
+
+	/* Default TC to one-shot. Does NOT start the counter. */
+	HAL_TC_ConfigMode(TC, HAL_TC_MODE_ONE_SHOT);
 
 	/* Configure system clock */
 	HAL_CPM_SetHighSpeedOscTrim(CPM_OSC_FREQ_320MHZ);

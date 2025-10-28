@@ -104,9 +104,21 @@ typedef struct
 {
 	__IO uint16_t WCR;    /*!< 0x00 Control */
 	__IO uint16_t WMR;    /*!< 0x02 Reload/Match */
-	__I  uint16_t WCNTR;  /*!< 0x04 Counter (RO) */
+	__I  uint16_t WCNTR;  /*!< 0x04 Counter (read-only) */
 	__IO uint16_t WSR;    /*!< 0x06 Service */
 } WDT_TypeDef;
+
+/* -------------------------------------------------------------------------- */
+/* Timer/Counter (TC) register map                                            */
+/* -------------------------------------------------------------------------- */
+
+typedef struct
+{
+	__IO uint16_t TCCR;    /*!< 0x00: Control */
+	__IO uint16_t TCMR;    /*!< 0x02: Modulus / Reload */
+	__I  uint16_t TCCNTR;  /*!< 0x04: Counter (read-only) */
+	__IO uint16_t TCSR;    /*!< 0x06: Service */
+} TC_TypeDef;
 
 /* Base addresses for memory regions */
 #define PERIPH_BASE      0x40000000UL    /*!< Peripheral base address*/
@@ -114,10 +126,12 @@ typedef struct
 /* Peripheral base addresses */
 #define CPM_BASE         (PERIPH_BASE + 0x00004000UL) /*!< Clock and Power Management base address */
 #define WDT_BASE         (PERIPH_BASE + 0x00005000UL)
+#define TC_BASE          (PERIPH_BASE + 0x00006000UL)
 
 /* peripheral declaration */
 #define CPM              ((CPM_TypeDef *)(CPM_BASE))
 #define WDT              ((WDT_TypeDef *)(WDT_BASE))
+#define TC               ((TC_TypeDef *)(TC_BASE))
 
 /* -------------------------------------------------------------------------- */
 /* Bit definitions                                                            */
@@ -626,6 +640,104 @@ typedef struct
 #define WDT_WSR_WS_Msk          (0xFFFFUL << WDT_WSR_WS_Pos)
 #define WDT_WSR_WS              WDT_WSR_WS_Msk
 
+/******************************************************************************/
+/*                                                                            */
+/*                             Timer/Counter                                  */
+/*                                                                            */
+/******************************************************************************/
+
+/*******************  Bits definition for TC_TCCR register  *******************/
+
+/* [11] WAIT */
+#define TC_TCCR_WAIT_Pos         (11U)
+#define TC_TCCR_WAIT_Msk         (0x1U << TC_TCCR_WAIT_Pos)
+#define TC_TCCR_WAIT             TC_TCCR_WAIT_Msk
+
+/* [10] DOZE */
+#define TC_TCCR_DOZE_Pos         (10U)
+#define TC_TCCR_DOZE_Msk         (0x1U << TC_TCCR_DOZE_Pos)
+#define TC_TCCR_DOZE             TC_TCCR_DOZE_Msk
+
+/* [9] STOP */
+#define TC_TCCR_STOP_Pos         (9U)
+#define TC_TCCR_STOP_Msk         (0x1U << TC_TCCR_STOP_Pos)
+#define TC_TCCR_STOP             TC_TCCR_STOP_Msk
+
+/* [8] DBG */
+#define TC_TCCR_DBG_Pos          (8U)
+#define TC_TCCR_DBG_Msk          (0x1U << TC_TCCR_DBG_Pos)
+#define TC_TCCR_DBG              TC_TCCR_DBG_Msk
+
+/* [7] IS */
+#define TC_TCCR_IS_Pos           (7U)
+#define TC_TCCR_IS_Msk           (0x1U << TC_TCCR_IS_Pos)
+#define TC_TCCR_IS               TC_TCCR_IS_Msk
+
+/* [6:4] WDP[2:0] */
+#define TC_TCCR_WDP_Pos          (4U)
+#define TC_TCCR_WDP_Msk          (0x7U << TC_TCCR_WDP_Pos)
+#define TC_TCCR_WDP              TC_TCCR_WDP_Msk
+#define TC_TCCR_WDP_VAL(n)       (((uint16_t)(n) & 0x7U) << TC_TCCR_WDP_Pos)
+
+/**
+ *  Encoding (from legacy driver naming):
+ *    000: input clock period * 2048  -> DIV2048
+ *    001: input clock period * 1024  -> DIV1024
+ *    010: input clock period * 512   -> DIV512
+ *    011: input clock period * 256   -> DIV256
+ *    100: input clock period * 128   -> DIV128
+ *    101: input clock period * 64    -> DIV64
+ *    110: input clock period * 32    -> DIV32
+ *    111: input clock period * 16    -> DIV16
+ */
+#define TC_TCCR_WDP_DIV2048      (0x0U << TC_TCCR_WDP_Pos)
+#define TC_TCCR_WDP_DIV1024      (0x1U << TC_TCCR_WDP_Pos)
+#define TC_TCCR_WDP_DIV512       (0x2U << TC_TCCR_WDP_Pos)
+#define TC_TCCR_WDP_DIV256       (0x3U << TC_TCCR_WDP_Pos)
+#define TC_TCCR_WDP_DIV128       (0x4U << TC_TCCR_WDP_Pos)
+#define TC_TCCR_WDP_DIV64        (0x5U << TC_TCCR_WDP_Pos)
+#define TC_TCCR_WDP_DIV32        (0x6U << TC_TCCR_WDP_Pos)
+#define TC_TCCR_WDP_DIV16        (0x7U << TC_TCCR_WDP_Pos)
+
+/* [3] IF */
+#define TC_TCCR_IF_Pos           (3U)
+#define TC_TCCR_IF_Msk           (0x1U << TC_TCCR_IF_Pos)
+#define TC_TCCR_IF               TC_TCCR_IF_Msk
+
+/* [2] IE */
+#define TC_TCCR_IE_Pos           (2U)
+#define TC_TCCR_IE_Msk           (0x1U << TC_TCCR_IE_Pos)
+#define TC_TCCR_IE               TC_TCCR_IE_Msk
+
+/* [1] CU */
+#define TC_TCCR_CU_Pos           (1U)
+#define TC_TCCR_CU_Msk           (0x1U << TC_TCCR_CU_Pos)
+#define TC_TCCR_CU               TC_TCCR_CU_Msk
+
+/* [0] RN */
+#define TC_TCCR_RN_Pos           (0U)
+#define TC_TCCR_RN_Msk           (0x1U << TC_TCCR_RN_Pos)
+#define TC_TCCR_RN               TC_TCCR_RN_Msk
+
+#define TC_TCCR_MODE_Msk         (TC_TCCR_DBG_Msk | TC_TCCR_DOZE_Msk | TC_TCCR_WAIT_Msk)
+
+/*******************  Bits definition for TC_TCMR register  *******************/
+/* [15:0] TCM */
+#define TC_TCMR_TCM_Pos          (0U)
+#define TC_TCMR_TCM_Msk          (0xFFFFU << TC_TCMR_TCM_Pos)
+#define TC_TCMR_TCM              TC_TCMR_TCM_Msk
+
+/*******************  Bits definition for TC_TCCNTR register ******************/
+/* [15:0] TCCNTR */
+#define TC_TCCNTR_TC_Pos         (0U)
+#define TC_TCCNTR_TC_Msk         (0xFFFFU << TC_TCCNTR_TC_Pos)
+#define TC_TCCNTR_TC             TC_TCCNTR_TC_Msk
+
+/*******************  Bits definition for TC_TCSR register  *******************/
+/* [15:0] TCSR */
+#define TC_TCSR_TS_Pos           (0U)
+#define TC_TCSR_TS_Msk           (0xFFFFU << TC_TCSR_TS_Pos)
+#define TC_TCSR_TS               TC_TCSR_TS_Msk
 
 #ifdef __cplusplus
 }
