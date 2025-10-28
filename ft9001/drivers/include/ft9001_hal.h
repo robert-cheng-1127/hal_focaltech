@@ -8,6 +8,7 @@
 #define FT9001_HAL_H_
 
 #include "ft9001_cpm.h"
+#include "ft9001_tc.h"
 #include "ft9001_wdt.h"
 
 #ifdef __cplusplus

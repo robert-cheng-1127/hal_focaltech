@@ -18,6 +18,9 @@ void SystemInit(void)
 {
 	ft9001_wdt_disable(WDT);
 
+	/* One-shot by default; this does not start the counter. */
+	ft9001_tc_mode_set(TC, FT9001_TC_MODE_ONE_SHOT);
+
 	(void)ft9001_cpm_hsosc_trim_set(FT9001_CPM_OSC_FREQ_320MHZ);
 	(void)ft9001_cpm_sysclk_source_set(FT9001_CPM_SYSCLK_OSC400M, SYSCLK_SWITCH_POLLS);
 	(void)ft9001_cpm_ips_div_set(1U);
