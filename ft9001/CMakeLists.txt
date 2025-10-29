@@ -18,3 +18,4 @@ zephyr_library_sources(
 zephyr_library_sources(${HAL_FT9001_ROOT}/drivers/src/ft9001_hal_cpm.c)
 zephyr_library_sources(${HAL_FT9001_ROOT}/drivers/src/ft9001_hal_wdt.c)
 zephyr_library_sources(${HAL_FT9001_ROOT}/drivers/src/ft9001_hal_tc.c)
+zephyr_library_sources(${HAL_FT9001_ROOT}/drivers/src/ft9001_hal_cache.c)

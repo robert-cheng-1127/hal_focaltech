@@ -21,6 +21,22 @@ void SystemInit(void)
 	HAL_CPM_SetHighSpeedOscTrim(CPM_OSC_FREQ_320MHZ);
 	HAL_CPM_SetSysClock(CPM_SYSCLK_OSC400M, 5U);
 	HAL_CPM_SetIpsClkDiv(1U);
+
+	/* I-Cache */
+	HAL_CACHE_Init(ICACHE,
+				   HAL_CACHE_MODE_OFF,
+				   HAL_CACHE_MODE_WRITE_BACK,
+				   HAL_CACHE_MODE_WRITE_BACK,
+				   HAL_CACHE_MODE_WRITE_BACK,
+				   HAL_CACHE_MODE_WRITE_BACK);
+
+	/* D-Cache */
+	HAL_CACHE_Init(DCACHE,
+                   HAL_CACHE_MODE_OFF,
+                   HAL_CACHE_MODE_OFF,
+                   HAL_CACHE_MODE_WRITE_BACK,
+                   HAL_CACHE_MODE_WRITE_BACK,
+                   HAL_CACHE_MODE_WRITE_BACK);
 }
 
 void SystemCoreClockUpdate(void)
