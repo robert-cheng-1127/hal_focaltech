@@ -17,8 +17,14 @@ config USE_FT9001_HAL_CPM
 	  Clock and power management: system clock source, high-speed oscillator
 	  trim, bus dividers.
 
+config USE_FT9001_HAL_CACHE
+	bool
+	help
+	  Cache region policy and maintenance operations.
+
 config USE_FT9001_SYSTEM_INIT
 	bool
+	select USE_FT9001_HAL_CACHE
 	select USE_FT9001_HAL_CPM
 	help
 	  CMSIS SystemInit() and SystemCoreClockUpdate() for platforms that boot
