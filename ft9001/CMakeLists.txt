@@ -18,6 +18,9 @@ zephyr_library_sources_ifdef(CONFIG_USE_FT9001_HAL_CPM
 zephyr_library_sources_ifdef(CONFIG_USE_FT9001_HAL_CACHE
     ${HAL_FT9001_ROOT}/drivers/src/ft9001_cache.c
 )
+zephyr_library_sources_ifdef(CONFIG_USE_FT9001_HAL_UART
+    ${HAL_FT9001_ROOT}/drivers/src/ft9001_uart.c
+)
 zephyr_library_sources_ifdef(CONFIG_USE_FT9001_SYSTEM_INIT
     ${HAL_FT9001_ROOT}/soc/system_ft9001.c
 )

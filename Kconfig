@@ -22,6 +22,11 @@ config USE_FT9001_HAL_CACHE
 	help
 	  Cache region policy and maintenance operations.
 
+config USE_FT9001_HAL_UART
+	bool
+	help
+	  UART frame format, baud rate divisor and FIFO setup.
+
 config USE_FT9001_SYSTEM_INIT
 	bool
 	select USE_FT9001_HAL_CACHE

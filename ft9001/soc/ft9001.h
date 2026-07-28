@@ -172,6 +172,35 @@ typedef struct
     __IO uint32_t CACHE_CCG;       /*!< 0x188 Clock gating */
 } CACHE_TypeDef;
 
+/* -------------------------------------------------------------------------- */
+/* UART (SCI) register map                                                    */
+/* -------------------------------------------------------------------------- */
+
+typedef struct {
+	__IO uint8_t SCIBDL;     /*!< 0x00 Baud rate divisor, low byte */
+	__IO uint8_t SCIBDH;     /*!< 0x01 Baud rate divisor, high byte */
+	__IO uint8_t SCICR2;     /*!< 0x02 Control 2 */
+	__IO uint8_t SCICR1;     /*!< 0x03 Control 1 */
+	__IO uint8_t SCISR2;     /*!< 0x04 Status 2 */
+	__IO uint8_t SCISR1;     /*!< 0x05 Status 1 */
+	__IO uint8_t SCIDRL;     /*!< 0x06 Data, low byte */
+	__IO uint8_t SCIDRH;     /*!< 0x07 Data, high byte (9th bit) */
+	__IO uint8_t SCIPORT;    /*!< 0x08 Pin state */
+	__IO uint8_t SCIPURD;    /*!< 0x09 Pull-up / reduced drive */
+	__IO uint8_t SCIBRDF;    /*!< 0x0A Baud rate divisor fraction */
+	__IO uint8_t SCIDDR;     /*!< 0x0B Pin direction */
+	__IO uint8_t SCIIRCR;    /*!< 0x0C IrDA control */
+	__IO uint8_t SCITR;      /*!< 0x0D Test */
+	__IO uint8_t SCIFCR;     /*!< 0x0E FIFO control */
+	__IO uint8_t SCIIRDR;    /*!< 0x0F IrDA data */
+	__IO uint8_t SCIDCR;     /*!< 0x10 DMA control */
+	__IO uint8_t SCIFSR;     /*!< 0x11 FIFO status */
+	__IO uint8_t SCIRXTOCTR; /*!< 0x12 RX timeout counter */
+	__IO uint8_t SCIFCR2;    /*!< 0x13 FIFO control 2 */
+	__IO uint8_t SCIFCTRL;   /*!< 0x14 Flow control */
+	__IO uint8_t SCIFSR2;    /*!< 0x15 FIFO status 2 */
+} UART_TypeDef;
+
 /* Base addresses for memory regions */
 #define PERIPH_BASE      0x40000000UL    /*!< Peripheral base address*/
 
@@ -179,6 +208,9 @@ typedef struct
 #define CPM_BASE         (PERIPH_BASE + 0x00004000UL) /*!< Clock and Power Management base address */
 #define WDT_BASE         (PERIPH_BASE + 0x00005000UL)
 #define TC_BASE          (PERIPH_BASE + 0x00006000UL)
+/* Of the SCI instances only these two are bonded out in the current package */
+#define UART2_BASE       (PERIPH_BASE + 0x00014000UL)
+#define UART3_BASE       (PERIPH_BASE + 0x0001D000UL)
 #define CACHE_BASE       (PERIPH_BASE + 0x00051000UL)
 #define CACHE2_BASE      (PERIPH_BASE + 0x00055000UL)
 
@@ -186,6 +218,8 @@ typedef struct
 #define CPM              ((CPM_TypeDef *)(CPM_BASE))
 #define WDT              ((WDT_TypeDef *)(WDT_BASE))
 #define TC               ((TC_TypeDef *)(TC_BASE))
+#define UART2            ((UART_TypeDef *)(UART2_BASE))
+#define UART3            ((UART_TypeDef *)(UART3_BASE))
 #define ICACHE           ((CACHE_TypeDef *)(CACHE_BASE))
 #define DCACHE           ((CACHE_TypeDef *)(CACHE2_BASE))
 
@@ -1167,9 +1201,269 @@ typedef struct
 #define CACHE_CCG_CLK_ENABLE_Msk            (0x1UL << CACHE_CCG_CLK_ENABLE_Pos)
 #define CACHE_CCG_CLK_ENABLE                CACHE_CCG_CLK_ENABLE_Msk
 
+/******************************************************************************/
+/*                                                                            */
+/*                                   UART                                     */
+/*                                                                            */
+/******************************************************************************/
+
+/*******************  Bits definition for UART_SCICR1 register  ***************/
+#define UART_SCICR1_LOOPS_Pos                (7U)
+#define UART_SCICR1_LOOPS_Msk                (0x1U << UART_SCICR1_LOOPS_Pos)
+#define UART_SCICR1_LOOPS                    UART_SCICR1_LOOPS_Msk
+#define UART_SCICR1_WOMS_Pos                 (6U)
+#define UART_SCICR1_WOMS_Msk                 (0x1U << UART_SCICR1_WOMS_Pos)
+#define UART_SCICR1_WOMS                     UART_SCICR1_WOMS_Msk
+#define UART_SCICR1_RSRC_Pos                 (5U)
+#define UART_SCICR1_RSRC_Msk                 (0x1U << UART_SCICR1_RSRC_Pos)
+#define UART_SCICR1_RSRC                     UART_SCICR1_RSRC_Msk
+/* Frame length: 0 = 10-bit (8 data bits), 1 = 11-bit (9 data bits) */
+#define UART_SCICR1_M_Pos                    (4U)
+#define UART_SCICR1_M_Msk                    (0x1U << UART_SCICR1_M_Pos)
+#define UART_SCICR1_M                        UART_SCICR1_M_Msk
+#define UART_SCICR1_WAKE_Pos                 (3U)
+#define UART_SCICR1_WAKE_Msk                 (0x1U << UART_SCICR1_WAKE_Pos)
+#define UART_SCICR1_WAKE                     UART_SCICR1_WAKE_Msk
+#define UART_SCICR1_ILT_Pos                  (2U)
+#define UART_SCICR1_ILT_Msk                  (0x1U << UART_SCICR1_ILT_Pos)
+#define UART_SCICR1_ILT                      UART_SCICR1_ILT_Msk
+#define UART_SCICR1_PE_Pos                   (1U)
+#define UART_SCICR1_PE_Msk                   (0x1U << UART_SCICR1_PE_Pos)
+#define UART_SCICR1_PE                       UART_SCICR1_PE_Msk
+/* Parity type: 0 = even, 1 = odd */
+#define UART_SCICR1_PT_Pos                   (0U)
+#define UART_SCICR1_PT_Msk                   (0x1U << UART_SCICR1_PT_Pos)
+#define UART_SCICR1_PT                       UART_SCICR1_PT_Msk
+
+/*******************  Bits definition for UART_SCICR2 register  ***************/
+#define UART_SCICR2_TIE_Pos                  (7U)
+#define UART_SCICR2_TIE_Msk                  (0x1U << UART_SCICR2_TIE_Pos)
+#define UART_SCICR2_TIE                      UART_SCICR2_TIE_Msk
+#define UART_SCICR2_TCIE_Pos                 (6U)
+#define UART_SCICR2_TCIE_Msk                 (0x1U << UART_SCICR2_TCIE_Pos)
+#define UART_SCICR2_TCIE                     UART_SCICR2_TCIE_Msk
+#define UART_SCICR2_RIE_Pos                  (5U)
+#define UART_SCICR2_RIE_Msk                  (0x1U << UART_SCICR2_RIE_Pos)
+#define UART_SCICR2_RIE                      UART_SCICR2_RIE_Msk
+#define UART_SCICR2_ILIE_Pos                 (4U)
+#define UART_SCICR2_ILIE_Msk                 (0x1U << UART_SCICR2_ILIE_Pos)
+#define UART_SCICR2_ILIE                     UART_SCICR2_ILIE_Msk
+#define UART_SCICR2_TE_Pos                   (3U)
+#define UART_SCICR2_TE_Msk                   (0x1U << UART_SCICR2_TE_Pos)
+#define UART_SCICR2_TE                       UART_SCICR2_TE_Msk
+#define UART_SCICR2_RE_Pos                   (2U)
+#define UART_SCICR2_RE_Msk                   (0x1U << UART_SCICR2_RE_Pos)
+#define UART_SCICR2_RE                       UART_SCICR2_RE_Msk
+#define UART_SCICR2_RWU_Pos                  (1U)
+#define UART_SCICR2_RWU_Msk                  (0x1U << UART_SCICR2_RWU_Pos)
+#define UART_SCICR2_RWU                      UART_SCICR2_RWU_Msk
+#define UART_SCICR2_SBK_Pos                  (0U)
+#define UART_SCICR2_SBK_Msk                  (0x1U << UART_SCICR2_SBK_Pos)
+#define UART_SCICR2_SBK                      UART_SCICR2_SBK_Msk
+
+/*******************  Bits definition for UART_SCISR1 register  ***************/
+#define UART_SCISR1_TDRE_Pos                 (7U)
+#define UART_SCISR1_TDRE_Msk                 (0x1U << UART_SCISR1_TDRE_Pos)
+#define UART_SCISR1_TDRE                     UART_SCISR1_TDRE_Msk
+#define UART_SCISR1_TC_Pos                   (6U)
+#define UART_SCISR1_TC_Msk                   (0x1U << UART_SCISR1_TC_Pos)
+#define UART_SCISR1_TC                       UART_SCISR1_TC_Msk
+#define UART_SCISR1_RDRF_Pos                 (5U)
+#define UART_SCISR1_RDRF_Msk                 (0x1U << UART_SCISR1_RDRF_Pos)
+#define UART_SCISR1_RDRF                     UART_SCISR1_RDRF_Msk
+#define UART_SCISR1_IDLE_Pos                 (4U)
+#define UART_SCISR1_IDLE_Msk                 (0x1U << UART_SCISR1_IDLE_Pos)
+#define UART_SCISR1_IDLE                     UART_SCISR1_IDLE_Msk
+#define UART_SCISR1_OR_Pos                   (3U)
+#define UART_SCISR1_OR_Msk                   (0x1U << UART_SCISR1_OR_Pos)
+#define UART_SCISR1_OR                       UART_SCISR1_OR_Msk
+#define UART_SCISR1_NF_Pos                   (2U)
+#define UART_SCISR1_NF_Msk                   (0x1U << UART_SCISR1_NF_Pos)
+#define UART_SCISR1_NF                       UART_SCISR1_NF_Msk
+#define UART_SCISR1_FE_Pos                   (1U)
+#define UART_SCISR1_FE_Msk                   (0x1U << UART_SCISR1_FE_Pos)
+#define UART_SCISR1_FE                       UART_SCISR1_FE_Msk
+#define UART_SCISR1_PF_Pos                   (0U)
+#define UART_SCISR1_PF_Msk                   (0x1U << UART_SCISR1_PF_Pos)
+#define UART_SCISR1_PF                       UART_SCISR1_PF_Msk
+
+/*******************  Bits definition for UART_SCIDRH register  ***************/
+#define UART_SCIDRH_R8_Pos                   (7U)
+#define UART_SCIDRH_R8_Msk                   (0x1U << UART_SCIDRH_R8_Pos)
+#define UART_SCIDRH_R8                       UART_SCIDRH_R8_Msk
+/* 9th transmit data bit; held at 1 it occupies the frame slot a second stop
+ * bit would, which is the only way this block approximates two stop bits.
+ */
+#define UART_SCIDRH_T8_Pos                   (6U)
+#define UART_SCIDRH_T8_Msk                   (0x1U << UART_SCIDRH_T8_Pos)
+#define UART_SCIDRH_T8                       UART_SCIDRH_T8_Msk
+
+/*******************  Bits definition for UART_SCIPORT register  **************/
+#define UART_SCIPORT_PORTSC1_Pos             (1U)
+#define UART_SCIPORT_PORTSC1_Msk             (0x1U << UART_SCIPORT_PORTSC1_Pos)
+#define UART_SCIPORT_PORTSC1                 UART_SCIPORT_PORTSC1_Msk
+#define UART_SCIPORT_PORTSC0_Pos             (0U)
+#define UART_SCIPORT_PORTSC0_Msk             (0x1U << UART_SCIPORT_PORTSC0_Pos)
+#define UART_SCIPORT_PORTSC0                 UART_SCIPORT_PORTSC0_Msk
+
+/*******************  Bits definition for UART_SCIPURD register  **************/
+#define UART_SCIPURD_SCISDOZ_Pos             (7U)
+#define UART_SCIPURD_SCISDOZ_Msk             (0x1U << UART_SCIPURD_SCISDOZ_Pos)
+#define UART_SCIPURD_SCISDOZ                 UART_SCIPURD_SCISDOZ_Msk
+#define UART_SCIPURD_RDPSCI_Pos              (4U)
+#define UART_SCIPURD_RDPSCI_Msk              (0x1U << UART_SCIPURD_RDPSCI_Pos)
+#define UART_SCIPURD_RDPSCI                  UART_SCIPURD_RDPSCI_Msk
+#define UART_SCIPURD_PUPSCI_Pos              (0U)
+#define UART_SCIPURD_PUPSCI_Msk              (0x1U << UART_SCIPURD_PUPSCI_Pos)
+#define UART_SCIPURD_PUPSCI                  UART_SCIPURD_PUPSCI_Msk
+
+/*******************  Bits definition for UART_SCIBRDF register  **************/
+/* Fractional part of the baud rate divisor, in units of 1/64 */
+#define UART_SCIBRDF_FRAC_Pos                (0U)
+#define UART_SCIBRDF_FRAC_Msk                (0x3FU << UART_SCIBRDF_FRAC_Pos)
+#define UART_SCIBRDF_FRAC                    UART_SCIBRDF_FRAC_Msk
+
+/*******************  Bits definition for UART_SCIDDR register  ***************/
+#define UART_SCIDDR_DDRSC1_Pos               (1U)
+#define UART_SCIDDR_DDRSC1_Msk               (0x1U << UART_SCIDDR_DDRSC1_Pos)
+#define UART_SCIDDR_DDRSC1                   UART_SCIDDR_DDRSC1_Msk
+#define UART_SCIDDR_DDRSC0_Pos               (0U)
+#define UART_SCIDDR_DDRSC0_Msk               (0x1U << UART_SCIDDR_DDRSC0_Pos)
+#define UART_SCIDDR_DDRSC0                   UART_SCIDDR_DDRSC0_Msk
+
+/*******************  Bits definition for UART_SCIIRCR register  **************/
+#define UART_SCIIRCR_TINV_Pos                (3U)
+#define UART_SCIIRCR_TINV_Msk                (0x1U << UART_SCIIRCR_TINV_Pos)
+#define UART_SCIIRCR_TINV                    UART_SCIIRCR_TINV_Msk
+#define UART_SCIIRCR_RINV_Pos                (2U)
+#define UART_SCIIRCR_RINV_Msk                (0x1U << UART_SCIIRCR_RINV_Pos)
+#define UART_SCIIRCR_RINV                    UART_SCIIRCR_RINV_Msk
+#define UART_SCIIRCR_IRSC_Pos                (1U)
+#define UART_SCIIRCR_IRSC_Msk                (0x1U << UART_SCIIRCR_IRSC_Pos)
+#define UART_SCIIRCR_IRSC                    UART_SCIIRCR_IRSC_Msk
+#define UART_SCIIRCR_IREN_Pos                (0U)
+#define UART_SCIIRCR_IREN_Msk                (0x1U << UART_SCIIRCR_IREN_Pos)
+#define UART_SCIIRCR_IREN                    UART_SCIIRCR_IREN_Msk
+
+/*******************  Bits definition for UART_SCIFCR register  ***************/
+#define UART_SCIFCR_RFEN_Pos                 (7U)
+#define UART_SCIFCR_RFEN_Msk                 (0x1U << UART_SCIFCR_RFEN_Pos)
+#define UART_SCIFCR_RFEN                     UART_SCIFCR_RFEN_Msk
+#define UART_SCIFCR_TFEN_Pos                 (6U)
+#define UART_SCIFCR_TFEN_Msk                 (0x1U << UART_SCIFCR_TFEN_Pos)
+#define UART_SCIFCR_TFEN                     UART_SCIFCR_TFEN_Msk
+/* RX FIFO trigger level */
+#define UART_SCIFCR_RXFLSEL_Pos              (3U)
+#define UART_SCIFCR_RXFLSEL_Msk              (0x7U << UART_SCIFCR_RXFLSEL_Pos)
+#define UART_SCIFCR_RXFLSEL_1_8              (0x0U << UART_SCIFCR_RXFLSEL_Pos)
+#define UART_SCIFCR_RXFLSEL_1_4              (0x1U << UART_SCIFCR_RXFLSEL_Pos)
+#define UART_SCIFCR_RXFLSEL_1_2              (0x2U << UART_SCIFCR_RXFLSEL_Pos)
+#define UART_SCIFCR_RXFLSEL_3_4              (0x3U << UART_SCIFCR_RXFLSEL_Pos)
+#define UART_SCIFCR_RXFLSEL_7_8              (0x4U << UART_SCIFCR_RXFLSEL_Pos)
+/* TX FIFO trigger level */
+#define UART_SCIFCR_TXFLSEL_Pos              (0U)
+#define UART_SCIFCR_TXFLSEL_Msk              (0x7U << UART_SCIFCR_TXFLSEL_Pos)
+#define UART_SCIFCR_TXFLSEL_7_8              (0x0U << UART_SCIFCR_TXFLSEL_Pos)
+#define UART_SCIFCR_TXFLSEL_3_4              (0x1U << UART_SCIFCR_TXFLSEL_Pos)
+#define UART_SCIFCR_TXFLSEL_1_2              (0x2U << UART_SCIFCR_TXFLSEL_Pos)
+#define UART_SCIFCR_TXFLSEL_1_4              (0x3U << UART_SCIFCR_TXFLSEL_Pos)
+#define UART_SCIFCR_TXFLSEL_1_8              (0x4U << UART_SCIFCR_TXFLSEL_Pos)
+
+/*******************  Bits definition for UART_SCIDCR register  ***************/
+#define UART_SCIDCR_TXDMAE_Pos               (1U)
+#define UART_SCIDCR_TXDMAE_Msk               (0x1U << UART_SCIDCR_TXDMAE_Pos)
+#define UART_SCIDCR_TXDMAE                   UART_SCIDCR_TXDMAE_Msk
+#define UART_SCIDCR_RXDMAE_Pos               (0U)
+#define UART_SCIDCR_RXDMAE_Msk               (0x1U << UART_SCIDCR_RXDMAE_Pos)
+#define UART_SCIDCR_RXDMAE                   UART_SCIDCR_RXDMAE_Msk
+
+/*******************  Bits definition for UART_SCIFSR register  ***************/
+#define UART_SCIFSR_TFTS_Pos                 (7U)
+#define UART_SCIFSR_TFTS_Msk                 (0x1U << UART_SCIFSR_TFTS_Pos)
+#define UART_SCIFSR_TFTS                     UART_SCIFSR_TFTS_Msk
+#define UART_SCIFSR_FTC_Pos                  (6U)
+#define UART_SCIFSR_FTC_Msk                  (0x1U << UART_SCIFSR_FTC_Pos)
+#define UART_SCIFSR_FTC                      UART_SCIFSR_FTC_Msk
+#define UART_SCIFSR_RFTS_Pos                 (5U)
+#define UART_SCIFSR_RFTS_Msk                 (0x1U << UART_SCIFSR_RFTS_Pos)
+#define UART_SCIFSR_RFTS                     UART_SCIFSR_RFTS_Msk
+#define UART_SCIFSR_RTOS_Pos                 (4U)
+#define UART_SCIFSR_RTOS_Msk                 (0x1U << UART_SCIFSR_RTOS_Pos)
+#define UART_SCIFSR_RTOS                     UART_SCIFSR_RTOS_Msk
+#define UART_SCIFSR_TFULL_Pos                (3U)
+#define UART_SCIFSR_TFULL_Msk                (0x1U << UART_SCIFSR_TFULL_Pos)
+#define UART_SCIFSR_TFULL                    UART_SCIFSR_TFULL_Msk
+#define UART_SCIFSR_TEMPTY_Pos               (2U)
+#define UART_SCIFSR_TEMPTY_Msk               (0x1U << UART_SCIFSR_TEMPTY_Pos)
+#define UART_SCIFSR_TEMPTY                   UART_SCIFSR_TEMPTY_Msk
+#define UART_SCIFSR_RFULL_Pos                (1U)
+#define UART_SCIFSR_RFULL_Msk                (0x1U << UART_SCIFSR_RFULL_Pos)
+#define UART_SCIFSR_RFULL                    UART_SCIFSR_RFULL_Msk
+#define UART_SCIFSR_REMPTY_Pos               (0U)
+#define UART_SCIFSR_REMPTY_Msk               (0x1U << UART_SCIFSR_REMPTY_Pos)
+#define UART_SCIFSR_REMPTY                   UART_SCIFSR_REMPTY_Msk
+
+/*******************  Bits definition for UART_SCIFCR2 register  **************/
+#define UART_SCIFCR2_TXFIE_Pos               (7U)
+#define UART_SCIFCR2_TXFIE_Msk               (0x1U << UART_SCIFCR2_TXFIE_Pos)
+#define UART_SCIFCR2_TXFIE                   UART_SCIFCR2_TXFIE_Msk
+#define UART_SCIFCR2_TXFCIE_Pos              (6U)
+#define UART_SCIFCR2_TXFCIE_Msk              (0x1U << UART_SCIFCR2_TXFCIE_Pos)
+#define UART_SCIFCR2_TXFCIE                  UART_SCIFCR2_TXFCIE_Msk
+#define UART_SCIFCR2_RXFIE_Pos               (5U)
+#define UART_SCIFCR2_RXFIE_Msk               (0x1U << UART_SCIFCR2_RXFIE_Pos)
+#define UART_SCIFCR2_RXFIE                   UART_SCIFCR2_RXFIE_Msk
+#define UART_SCIFCR2_RXORIE_Pos              (4U)
+#define UART_SCIFCR2_RXORIE_Msk              (0x1U << UART_SCIFCR2_RXORIE_Pos)
+#define UART_SCIFCR2_RXORIE                  UART_SCIFCR2_RXORIE_Msk
+#define UART_SCIFCR2_RXFTOIE_Pos             (3U)
+#define UART_SCIFCR2_RXFTOIE_Msk             (0x1U << UART_SCIFCR2_RXFTOIE_Pos)
+#define UART_SCIFCR2_RXFTOIE                 UART_SCIFCR2_RXFTOIE_Msk
+#define UART_SCIFCR2_RXFTOE_Pos              (2U)
+#define UART_SCIFCR2_RXFTOE_Msk              (0x1U << UART_SCIFCR2_RXFTOE_Pos)
+#define UART_SCIFCR2_RXFTOE                  UART_SCIFCR2_RXFTOE_Msk
+#define UART_SCIFCR2_TXFCLR_Pos              (1U)
+#define UART_SCIFCR2_TXFCLR_Msk              (0x1U << UART_SCIFCR2_TXFCLR_Pos)
+#define UART_SCIFCR2_TXFCLR                  UART_SCIFCR2_TXFCLR_Msk
+#define UART_SCIFCR2_RXFCLR_Pos              (0U)
+#define UART_SCIFCR2_RXFCLR_Msk              (0x1U << UART_SCIFCR2_RXFCLR_Pos)
+#define UART_SCIFCR2_RXFCLR                  UART_SCIFCR2_RXFCLR_Msk
+
+/*******************  Bits definition for UART_SCIFCTRL register  *************/
+#define UART_SCIFCTRL_RTSE_Pos               (3U)
+#define UART_SCIFCTRL_RTSE_Msk               (0x1U << UART_SCIFCTRL_RTSE_Pos)
+#define UART_SCIFCTRL_RTSE                   UART_SCIFCTRL_RTSE_Msk
+#define UART_SCIFCTRL_CTSE_Pos               (2U)
+#define UART_SCIFCTRL_CTSE_Msk               (0x1U << UART_SCIFCTRL_CTSE_Pos)
+#define UART_SCIFCTRL_CTSE                   UART_SCIFCTRL_CTSE_Msk
+#define UART_SCIFCTRL_CTSIE_Pos              (1U)
+#define UART_SCIFCTRL_CTSIE_Msk              (0x1U << UART_SCIFCTRL_CTSIE_Pos)
+#define UART_SCIFCTRL_CTSIE                  UART_SCIFCTRL_CTSIE_Msk
+#define UART_SCIFCTRL_CTSIS_Pos              (0U)
+#define UART_SCIFCTRL_CTSIS_Msk              (0x1U << UART_SCIFCTRL_CTSIS_Pos)
+#define UART_SCIFCTRL_CTSIS                  UART_SCIFCTRL_CTSIS_Msk
+
+/*******************  Bits definition for UART_SCIFSR2 register  **************/
+/* All four are write-one-to-clear */
+#define UART_SCIFSR2_FOR_Pos                 (3U)
+#define UART_SCIFSR2_FOR_Msk                 (0x1U << UART_SCIFSR2_FOR_Pos)
+#define UART_SCIFSR2_FOR                     UART_SCIFSR2_FOR_Msk
+#define UART_SCIFSR2_FNF_Pos                 (2U)
+#define UART_SCIFSR2_FNF_Msk                 (0x1U << UART_SCIFSR2_FNF_Pos)
+#define UART_SCIFSR2_FNF                     UART_SCIFSR2_FNF_Msk
+#define UART_SCIFSR2_FFE_Pos                 (1U)
+#define UART_SCIFSR2_FFE_Msk                 (0x1U << UART_SCIFSR2_FFE_Pos)
+#define UART_SCIFSR2_FFE                     UART_SCIFSR2_FFE_Msk
+#define UART_SCIFSR2_FPF_Pos                 (0U)
+#define UART_SCIFSR2_FPF_Msk                 (0x1U << UART_SCIFSR2_FPF_Pos)
+#define UART_SCIFSR2_FPF                     UART_SCIFSR2_FPF_Msk
+#define UART_SCIFSR2_ERR_Msk                                                   \
+	(UART_SCIFSR2_FOR_Msk | UART_SCIFSR2_FNF_Msk | UART_SCIFSR2_FFE_Msk |  \
+	 UART_SCIFSR2_FPF_Msk)
+
 #ifdef __cplusplus
 }
 
 #endif
 
-#endif /* __FT9001_H */
+#endif /* FT9001_H_ */
