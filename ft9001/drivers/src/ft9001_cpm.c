@@ -208,3 +208,18 @@ uint32_t ft9001_cpm_sysclk_freq_hz_get(void)
 
 	return base_hz / (sys_div + 1UL);
 }
+
+uint32_t ft9001_cpm_ips_freq_hz_get(void)
+{
+	uint32_t ips_div;
+	uint32_t sysclk_hz = ft9001_cpm_sysclk_freq_hz_get();
+
+	if (!FT9001_READ_BIT(CPM->CDIVENR, CPM_CDIVENR_IPS_DIVEN)) {
+		return sysclk_hz;
+	}
+
+	ips_div = (FT9001_READ_REG(CPM->PCDIVR1) & CPM_PCDIVR1_IPS_DIV_Msk) >>
+		  CPM_PCDIVR1_IPS_DIV_Pos;
+
+	return sysclk_hz / (ips_div + 1UL);
+}

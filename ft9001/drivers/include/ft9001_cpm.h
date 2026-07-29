@@ -107,6 +107,14 @@ int ft9001_cpm_ips_div_set(uint32_t div);
  */
 uint32_t ft9001_cpm_sysclk_freq_hz_get(void);
 
+/**
+ * @brief Compute the IPS bus clock in Hz.
+ *
+ * The SCI baud rate generator and the timers run from this, not from the core
+ * clock. Shares the software-estimate caveat of @ref ft9001_cpm_sysclk_freq_hz_get.
+ */
+uint32_t ft9001_cpm_ips_freq_hz_get(void);
+
 #ifdef __cplusplus
 }
 #endif
